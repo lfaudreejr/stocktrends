@@ -17,6 +17,3 @@ selenium-debug.log
 
 # ENV and Config files
 .env
-
-# build
-/build
