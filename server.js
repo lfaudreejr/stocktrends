@@ -1,18 +1,27 @@
 const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const mongodb = require('mongodb');
+const path = require('path');
 
 const ObjectID = mongodb.ObjectID;
 const mongo = mongodb.MongoClient;
 
-const app = express();
-
 if (process.env.NODE_ENV !== 'production') {
+  const cors = require('cors');
   require('dotenv').config();
+  app.use(cors());
 }
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// Set static path to Angular app in dist
+// Dont run in dev
+if (process.env.NODE_ENV !== 'dev') {
+  app.use('/', express.static(path.join(__dirname, './dist')));
+}
 
 mongo.connect(process.env.MONGODB_URI, (err, database) => {
   if (err) {
@@ -22,7 +31,7 @@ mongo.connect(process.env.MONGODB_URI, (err, database) => {
   let db = database;
   console.log('Database connection ready');
 
-  let server = app.listen(process.env.PORT || 3000, () => {
+  server.listen(process.env.PORT || 3000, () => {
     let port = server.address().port;
     console.log(`App now running on port: ${port}`);
   });
@@ -34,28 +43,37 @@ function handleError(res, reason, message, code) {
   res.status(code || 500).json({ error: message });
 }
 
-app.get('/', (req, res) => {
-  res.send('Hi from my App');
+// app.get('/symbol', (req, res) => {
+//   let { newDoc } = req.body;
+//   db.collection('symbols').find({ newDoc }).toArray((err, docs) => {
+//     if (err) {
+//       handleError(err, err.message, 'Failed to retreive symbol.');
+//     }
+//     else {
+//       res.status(200).json(docs);
+//     }
+//   });
+// });
+// app.post('/symbol', (req, res) => {
+//   let { newDoc } = req.body;
+//   db.collection('symbols').insertOne({ newDoc }, (err, docs) => {
+//     if (err) {
+//       handleError(err, err.message, 'Failed to save symbol.');
+//     }
+//     else {
+//       res.status(201).json(docs);
+//     }
+//   });
+// });
+// TODO: Input socket.io
+io.on('connection', (socket) => {
+  console.log('User connected');
+  socket.emit('test', { hello: 'Hello World!' });
 });
-app.get('/symbol', (req, res) => {
-  let { newDoc } = req.body;
-  db.collection('symbols').find({ newDoc }).toArray((err, docs) => {
-    if (err) {
-      handleError(err, err.message, 'Failed to retreive symbol.');
-    }
-    else {
-      res.status(200).json(docs);
-    }
+// Pass routing to Angular
+// Dont run in dev
+if (process.env.NODE_ENV !== 'dev') {
+  app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname, '/dist/index.html'));
   });
-});
-app.post('/symbol', (req, res) => {
-  let { newDoc } = req.body;
-  db.collection('symbols').insertOne({ newDoc }, (err, docs) => {
-    if (err) {
-      handleError(err, err.message, 'Failed to save symbol.');
-    }
-    else {
-      res.status(201).json(docs);
-    }
-  });
-});
+}
