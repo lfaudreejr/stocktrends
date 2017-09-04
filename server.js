@@ -1,6 +1,6 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import mongodb from 'mongodb';
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongodb = require('mongodb');
 
 const ObjectID = mongodb.ObjectID;
 const mongo = mongodb.MongoClient;
@@ -32,4 +32,25 @@ function handleError(res, reason, message, code) {
 
 app.get('/', (req, res) => {
   res.send('HELLO');
+});
+app.get('/symbol/:id', (req, res) => {
+  db.collection('symbols').find(req.params.id).toArray((err, docs) => {
+    if (err) {
+      handleError(err, err.message, 'Failed to retreive symbol.');
+    }
+    else {
+      res.status(200).json(docs);
+    }
+  });
+});
+app.get('/symbol/:id', (req, res) => {
+  let { newDoc } = req.params.id;
+  db.collection('symbols').insertOne({ newDoc }, (err, docs) => {
+    if (err) {
+      handleError(err, err.message, 'Failed to save symbol.');
+    }
+    else {
+      res.status(201).json(docs);
+    }
+  });
 });
