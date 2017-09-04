@@ -7,6 +7,10 @@ const mongo = mongodb.MongoClient;
 
 const app = express();
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,10 +35,11 @@ function handleError(res, reason, message, code) {
 }
 
 app.get('/', (req, res) => {
-  res.send('HELLO');
+  res.send('Hi from my App');
 });
-app.get('/symbol/:id', (req, res) => {
-  db.collection('symbols').find(req.params.id).toArray((err, docs) => {
+app.get('/symbol', (req, res) => {
+  let { newDoc } = req.body;
+  db.collection('symbols').find({ newDoc }).toArray((err, docs) => {
     if (err) {
       handleError(err, err.message, 'Failed to retreive symbol.');
     }
@@ -43,8 +48,8 @@ app.get('/symbol/:id', (req, res) => {
     }
   });
 });
-app.get('/symbol/:id', (req, res) => {
-  let { newDoc } = req.params.id;
+app.post('/symbol', (req, res) => {
+  let { newDoc } = req.body;
   db.collection('symbols').insertOne({ newDoc }, (err, docs) => {
     if (err) {
       handleError(err, err.message, 'Failed to save symbol.');

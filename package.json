@@ -5,6 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "node server.js",
+    "pm2:start": "pm2 start server.js --watch && pm2 logs",
+    "pm2:stop": "pm2 stop 0",
     "ng:serve": "ng serve",
     "ng:build": "ng build",
     "ng:test": "ng test",
@@ -41,6 +43,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "codelyzer": "~3.1.1",
+    "dotenv": "^4.0.0",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",
