@@ -17,10 +17,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// Set static path to Angular app in dist
-// Dont run in dev
+
 if (process.env.NODE_ENV !== 'dev') {
-  app.use('/', express.static(path.join(__dirname, './dist')));
+  app.use('/', express.static(path.join(__dirname, './build')));
 }
 
 mongo.connect(process.env.MONGODB_URI, (err, database) => {
@@ -70,10 +69,10 @@ io.on('connection', (socket) => {
   console.log('User connected');
   socket.emit('test', { hello: 'Hello World!' });
 });
-// Pass routing to Angular
+// Pass routing to Vue
 // Dont run in dev
 if (process.env.NODE_ENV !== 'dev') {
   app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, '/dist/index.html'));
+    res.sendFile(path.join(__dirname, '/build/index.html'));
   });
 }
