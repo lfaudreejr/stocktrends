@@ -1,6 +1,8 @@
 <template>
   <div class="hello">
+    <stock-chart></stock-chart>
     <h1>{{ msg }}</h1>
+    <stock-search></stock-search>
     <h2>Essential Links</h2>
     <ul>
       <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
@@ -21,11 +23,15 @@
 </template>
 
 <script>
+import StockSearch from './StockSearch';
+import StockChart from './StockChart';
+
 export default {
+  components: { StockSearch, StockChart },
   name: 'hello',
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      msg: 'Welcome to Your StockTrends App',
     };
   },
 };
