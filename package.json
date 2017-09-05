@@ -11,15 +11,20 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
-    "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
+    "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs ",
     "pm2:start": "pm2 start server.js --watch && pm2 logs",
     "pm2:stop": "pm2 stop 0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "body-parser": "^1.17.2",
+    "bootstrap": "^3.3.7",
+    "bootstrap-vue": "^1.0.0-beta.7",
     "cors": "^2.8.4",
+    "highcharts": "^5.0.14",
     "mongodb": "^2.2.31",
     "socket.io": "^2.0.3",
+    "style-loader": "^0.18.2",
     "vue": "^2.4.2",
     "vue-router": "^2.7.0"
   },
@@ -93,9 +98,5 @@
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  "browserslist": [ "> 1%", "last 2 versions", "not ie <= 8" ]
 }
